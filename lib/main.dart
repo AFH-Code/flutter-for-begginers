@@ -5,11 +5,11 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -47,11 +47,11 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>{
   int _counter = 0;
 
   void _incrementCounter() {
-    setState(() {
+    setState((){
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
       // so that the display can reflect the updated values. If we changed
@@ -100,8 +100,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
+            const TapExample(label: 'Tap count')
           ],
         ),
       ),
@@ -114,3 +115,44 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+class TapExample extends StatefulWidget {
+  const TapExample({super.key, required this.label});
+
+  final String label;
+
+  @override
+  _TapExampleState createState() => _TapExampleState();
+}
+class _TapExampleState extends State<TapExample> {
+  int _counter = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _counter++;
+        });
+      },
+      child: Card(
+          elevation: 5,
+          shadowColor: Colors.black,
+          color: Colors.greenAccent[100],
+          child: SizedBox(
+              width: 300,
+              height: 120,
+              child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                      children: [
+                        Text(
+                          "${widget.label} : $_counter ",
+                        )
+                      ]
+                  )
+              )
+          )
+      )
+    );
+  }
+}
