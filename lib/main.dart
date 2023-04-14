@@ -24,7 +24,14 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      onGenerateRoute: (settings) {
+        if (settings.name == '/') {
+          return MaterialPageRoute(builder: (context) =>    MyHomePage(title: "Flutter Demo Home Page"));
+        } else if (settings.name == '/screen2') {
+          return MaterialPageRoute(builder: (context) =>    AnotherScreen(title: settings.arguments as String));
+        }
+      },
+      //home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -106,14 +113,25 @@ class _MyHomePageState extends State<MyHomePage>{
             const TapExample(label: 'Tap count'),
             ElevatedButton(
               child: Text('Press this'),
-              onPressed: () {
-                Navigator.of(context).push(
+              onPressed: (){
+                Navigator.of(context).pushNamed('/screen2', arguments: "Go back again");
+              },
+            ),
+
+            ElevatedButton(
+              child: Text('Press this'),
+              onPressed: () async {
+                bool? outcome = await Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) {
                     return AnotherScreen(title: "Go back");
                   }),
                 );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("$outcome")),
+                );
               },
             ),
+
           ],
 
         ),
@@ -180,13 +198,24 @@ class AnotherScreen extends StatelessWidget {
           title: Text("Menu Page 2"),
         ),
       body: Center(
-        child: ElevatedButton(
-          child: Text(title),
-          onPressed: () {
-            // To be added
-            Navigator.of(context).pop();
-          },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              child: Text(title),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+            ElevatedButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+          ],
         ),
+
       ),
     );
   }
