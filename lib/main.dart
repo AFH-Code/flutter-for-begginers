@@ -4,12 +4,26 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String? _selectedTown;
+
+  void _setTownName(String townName) {
+    setState(() {
+      _selectedTown = townName;
+    });
+  }
+
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -24,20 +38,36 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      onGenerateRoute: (settings) {
-        if (settings.name == '/') {
-          return MaterialPageRoute(builder: (context) =>    MyHomePage(title: "Flutter Demo Home Page"));
-        } else if (settings.name == '/screen2') {
-          return MaterialPageRoute(builder: (context) =>    AnotherScreen(title: settings.arguments as String));
-        }
-      },
-      //home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: Navigator(
+        pages: [
+          MaterialPage(
+              child: MyHomePage(
+                title: "Press this",
+                townNameCallback: _setTownName,
+              )),
+          if (_selectedTown != null)
+            MaterialPage(
+              child: TownScreen(title: _selectedTown!),
+            ),
+        ],
+        onPopPage: (route, result) {
+          if (!route.didPop(result)) {
+            return false;
+          }
+          setState(() {
+            _selectedTown = null;
+          });
+
+          return true;
+        },
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, required this.townNameCallback});
+  final void Function(String) townNameCallback;
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -111,12 +141,6 @@ class _MyHomePageState extends State<MyHomePage>{
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             const TapExample(label: 'Tap count'),
-            ElevatedButton(
-              child: Text('Press this'),
-              onPressed: (){
-                Navigator.of(context).pushNamed('/screen2', arguments: "Go back again");
-              },
-            ),
 
             ElevatedButton(
               child: Text('Press this'),
@@ -129,6 +153,19 @@ class _MyHomePageState extends State<MyHomePage>{
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text("$outcome")),
                 );
+              },
+            ),
+
+            ElevatedButton(
+              child: Text('Whitby'),
+              onPressed: () {
+                widget.townNameCallback("Whitby");
+              },
+            ),
+            ElevatedButton(
+              child: Text('Scarborough'),
+              onPressed: () async {
+                widget.townNameCallback("Scarborough");
               },
             ),
 
@@ -153,6 +190,7 @@ class TapExample extends StatefulWidget {
   @override
   _TapExampleState createState() => _TapExampleState();
 }
+
 class _TapExampleState extends State<TapExample> {
   int _counter = 0;
 
@@ -216,6 +254,34 @@ class AnotherScreen extends StatelessWidget {
           ],
         ),
 
+      ),
+    );
+  }
+}
+
+
+class TownScreen extends StatelessWidget {
+  TownScreen({required this.title});
+  final String title;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Menu Town"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(title),
+            ElevatedButton(
+              child: Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
