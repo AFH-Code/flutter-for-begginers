@@ -1,13 +1,14 @@
 import '../models/data_layer.dart';
 import 'package:flutter/material.dart';
 
+import '../plan_provider.dart';
+
 class PlanScreen extends StatefulWidget {
   @override
   State createState() => _PlanScreenState();
 }
 
 class _PlanScreenState extends State<PlanScreen> {
-  final plan = Plan();
   late ScrollController scrollController;
 
   @override
@@ -27,14 +28,19 @@ class _PlanScreenState extends State<PlanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final plan = PlanProvider.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text('Master Plan')),
-      body: _buildList(),
-      floatingActionButton: _buildAddTaskButton(),
+        appBar: AppBar(title: Text('Master Plan')),
+        body: Column(children: <Widget>[
+          Expanded(child: _buildList()),
+          SafeArea(child: Text(plan.completenessMessage))
+        ]),
+        floatingActionButton: _buildAddTaskButton()
     );
   }
 
   Widget _buildList() {
+    final plan = PlanProvider.of(context);
     return ListView.builder(
       controller: scrollController,
 
@@ -45,6 +51,7 @@ class _PlanScreenState extends State<PlanScreen> {
   }
 
   Widget _buildAddTaskButton() {
+    final plan = PlanProvider.of(context);
     return FloatingActionButton(
       child: Icon(Icons.add),
       onPressed: () {
@@ -64,13 +71,13 @@ class _PlanScreenState extends State<PlanScreen> {
               task.complete = selected;
             });
           }),
-      title: TextField(
-        onChanged: (text) {
-          setState(() {
-            task.description = text;
-          });
-        },
-      ),
+      title: TextFormField(
+          initialValue: task.description,
+          onFieldSubmitted: (text) {
+            setState(() {
+              task.description = text;
+            });
+          }),
     );
   }
 }

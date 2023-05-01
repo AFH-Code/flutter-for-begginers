@@ -5,6 +5,6 @@ class Task {
 
   Task({
     this.complete = false,
-    this.description = '',
+    this.description = '...',
   });
 }
