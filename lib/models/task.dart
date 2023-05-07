@@ -1,6 +1,6 @@
 
 class Task {
-  String? description;
+  String description;
   bool? complete;
 
   Task({
