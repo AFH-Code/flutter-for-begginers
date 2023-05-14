@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/data_layer.dart';
+import '../textwidget/red_text_widget.dart';
 import '../plan_provider.dart';
 import 'plan_screen.dart';
 
@@ -69,8 +69,7 @@ class _PlanCreatorScreenState extends State<PlanCreatorScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Icon(Icons.linear_scale_rounded, size: 100, color: Colors.grey),
-            Text('You do not have any plans yet.',
-                style: Theme.of(context).textTheme.headline5)
+            RedTextWidget(text: 'You do not have any plans yet.')
           ]);
     }
 
