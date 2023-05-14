@@ -62,7 +62,6 @@ class _PlanCreatorScreenState extends State<PlanCreatorScreen> {
   }
 
   Widget _buildMasterPlans() {
-
     final plans = PlanProvider.of(context).plans;
 
     if (plans.isEmpty) {
@@ -92,7 +91,7 @@ class _PlanCreatorScreenState extends State<PlanCreatorScreen> {
             child: ListTile(
                 title: Text(plan.name),
                 subtitle: Text(plan.completenessMessage),
-                onTap: () {
+                onTap: ()  {
                   Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (_) => PlanScreen(plan: plan)));

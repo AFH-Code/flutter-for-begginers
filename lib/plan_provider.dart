@@ -3,7 +3,7 @@ import './models/data_layer.dart';
 import './controllers/plan_controller.dart';
 
 class PlanProvider extends InheritedWidget {
-  final _plans = <Plan>[];
+  //final _plans = <Plan>[];
   final _controller = PlanController();
 
   PlanProvider({Key? key, required Widget child}):super(key: key, child: child);
@@ -11,14 +11,9 @@ class PlanProvider extends InheritedWidget {
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => false;
 
-  /*static List<Plan> of(BuildContext context) {
-    final provider = context.dependOnInheritedWidgetOfExactType<PlanProvider>()!;
-    return provider._plans;
-  }*/
-
   static PlanController of(BuildContext context) {
-    final provider = context.dependOnInheritedWidgetOfExactType<PlanProvider>()!;
-    return provider._controller;
+    final provider = context.dependOnInheritedWidgetOfExactType<PlanProvider>();
+    return provider!._controller;
   }
 
-  }
+}
