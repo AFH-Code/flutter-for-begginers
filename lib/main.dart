@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import './pizza.dart';
+
+
 void main() {
   runApp(MyApp());
 }
@@ -35,16 +39,34 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(title: Text('JSON')),
       body: Container(
-          child: Text(pizzaString)
+        child: FutureBuilder(
+            future: readJsonFile(),
+            builder: (BuildContext context, AsyncSnapshot<List<Pizza>> pizzas){
+              return ListView.builder(
+                  itemCount: pizzas.data?.length ?? 0,
+                  itemBuilder: (BuildContext context, int position) {
+                    return ListTile(
+                      title: Text(pizzas.data![position].pizzaName ?? 'Noel'),
+                      subtitle: Text((pizzas.data![position].description ?? '') + ' - € '+ (pizzas.data![position].price?.toString() ?? '')),
+                    );
+                  }
+              );
+            }
+        ),
       ),
     );
   }
 
-  Future readJsonFile() async {
+  Future<List<Pizza>> readJsonFile() async {
     String myString = await DefaultAssetBundle.of(context)
         .loadString('assets/pizzalist.json');
-    setState(() {
-      pizzaString = myString;
+    List myMap = jsonDecode(myString);
+    List<Pizza> myPizzas = [];
+
+    myMap.forEach((dynamic pizza) {
+      Pizza myPizza = Pizza.fromJson(pizza);
+      myPizzas.add(myPizza);
     });
+    return myPizzas;
   }
 }
