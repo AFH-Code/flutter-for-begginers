@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import './pizza.dart';
-
+import './savedata.dart';
+import './httphelper.dart';
 
 void main() {
   runApp(MyApp());
@@ -33,14 +34,51 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
+  List<PopupMenuItem<String>> menuItems = <PopupMenuItem<String>>[PopupMenuItem(
+    value: 'Savedata',
+    child: Text('Savedata'),
+  )];
+
+  void goToSavedata(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) =>  SavedataScreen()));
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    Future<List<Pizza>> callPizzas() async {
+      HttpHelper helper = HttpHelper();
+      List<Pizza> pizzas = await helper.getPizzaList();
+      return pizzas;
+    }
+
+    @override
+    void initState() {
+      callPizzas();
+      super.initState();
+    }
+
     return Scaffold(
-      appBar: AppBar(title: Text('JSON')),
+      appBar: AppBar(
+          title: Text('JSON'),
+          actions: [
+            PopupMenuButton<String>(
+                icon: Icon(Icons.more_horiz),
+                itemBuilder: (BuildContext context) {
+                  return menuItems.toList();
+                },
+                onSelected: (s) {
+                  if (s == 'Savedata') {
+                    goToSavedata(context);
+                  }
+                }
+            )
+          ]
+      ),
       body: Container(
         child: FutureBuilder(
-            future: readJsonFile(),
+            future: callPizzas(),
             builder: (BuildContext context, AsyncSnapshot<List<Pizza>> pizzas){
               return ListView.builder(
                   itemCount: pizzas.data?.length ?? 0,
