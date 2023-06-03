@@ -7,6 +7,12 @@ class HttpHelper {
   final String authority = '0g7je.mocklab.io';
   final String path = 'pizzalist';
 
+  static final HttpHelper _httpHelper = HttpHelper._internal();
+  HttpHelper._internal();
+  factory HttpHelper() {
+    return _httpHelper;
+  }
+
   Future<List<Pizza>> getPizzaList() async {
     Uri url = Uri.https(authority, path);
     http.Response result = await http.get(url);
